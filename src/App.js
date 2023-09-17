@@ -1,62 +1,44 @@
 import React, { Component } from 'react';
-
 import Timer from './Timer'
 
 class App extends Component {
-
-  //no props being used here, so we can use the shorthand declaration of state
   state = {
     timerIDs: []
   }
 
+  componentDidMount() {
+    // Call handleAddTimer to add a Timer component to the state
+    this.handleAddTimer();
+  }
 
-  //Your code here:
+  handleAddTimer = () => {
+    // Generate a unique ID for each Timer component
+    const newTimerID = Math.random();
+    
+    this.setState(prevState => ({
+      timerIDs: [...prevState.timerIDs, newTimerID]
+    }));
+  }
 
+  handleRemoveTimer = (id) => {
+    this.setState(prevState => ({
+      timerIDs: prevState.timerIDs.filter(timerID => timerID !== id)
+    }));
+  }
 
-
-
-
-
-
-
-
-  // No need to modify anything in render or the class methods below
-  // Unless, of course, you're curious about how it all works
   render() {
-
+    const { timerIDs } = this.state;
     return (
       <div className="App">
-        <h1>MultiTimer</h1>
-        <button onClick={this.handleAddTimer}>Add New Timer</button>
-
+        <button onClick={this.handleAddTimer}>Add Timer</button>
         <div className="TimerGrid">
-          {this.renderTimers()}
+          {timerIDs.map(id => (
+            <Timer key={id} id={id} removeTimer={this.handleRemoveTimer} />
+          ))}
         </div>
-
       </div>
     );
   }
-
-  // returns array of components written in JSX, mapped from this.state.timerIDs
-  renderTimers = () => this.state.timerIDs.map(id => {
-    return <Timer key={id} id={id} removeTimer={this.removeTimer} />
-  })
-
-  // adds a random number for timer ID
-  handleAddTimer = () => {
-    this.setState(prevState => ({
-      timerIDs: [...prevState.timerIDs, Math.floor(Math.random()*1000)]
-    }))
-  }
-
-  // removeTimer updates state, removing any timer that matches the provided author
-  removeTimer = id => {
-    this.setState(prevState => ({
-      timerIDs: prevState.timerIDs.filter(timer_id => timer_id !== id)
-    }))
-  }
-
-
 }
 
 export default App;
